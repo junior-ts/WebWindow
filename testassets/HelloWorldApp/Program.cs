@@ -7,6 +7,7 @@ namespace HelloWorldApp
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             var window = new WebWindow("My great app", options =>
