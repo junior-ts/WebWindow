@@ -146,15 +146,15 @@ jobs:
     - task: CmdLine@2
       displayName: 'Merge .nupkg files'
       inputs:
-        script: 'sudo apt install zipmerge && mkdir combined && zipmerge combined/WebWindow.$(versionprefix)-$(Build.BuildNumber).nupkg artifacts/*/WebWindow.$(versionprefix)-$(Build.BuildNumber).nupkg'
+        script: 'sudo apt install zipmerge && mkdir combined && zipmerge combined/WebWindowCross.$(versionprefix)-$(Build.BuildNumber).nupkg artifacts/*/WebWindowCross.$(versionprefix)-$(Build.BuildNumber).nupkg'
     - task: CmdLine@2
       displayName: 'Copy WebWindow.Blazor nupkg to output'
       inputs:
-        script: 'cp artifacts/artifacts-windows-x64/WebWindow.Blazor.*.nupkg combined/'    
+        script: 'cp artifacts/artifacts-windows-x64/WebWindowCross.Blazor.*.nupkg combined/'    
     - task: CmdLine@2
-      displayName: 'Copy WebWindow.Blazor nupkg to output'
+      displayName: 'Copy WebWindowCross.Blazor nupkg to output'
       inputs:
-        script: 'cp artifacts/artifacts-windows-x86/WebWindow.Blazor.*.nupkg combined/'
+        script: 'cp artifacts/artifacts-windows-x86/WebWindowCross.Blazor.*.nupkg combined/'
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: 'combined'
