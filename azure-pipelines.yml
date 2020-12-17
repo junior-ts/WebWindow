@@ -132,4 +132,4 @@ jobs:
         command: push
         packagesToPush: 'artifacts/artifacts-combined/*.nupkg'
         nuGetFeedType: external
-        publishFeedCredentials: 'WebWindowNuGet'
+        publishFeedCredentials: 'nuget'
