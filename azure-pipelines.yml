@@ -75,7 +75,7 @@ jobs:
         configuration: '$(buildConfiguration)'
     - task: CmdLine@2
       displayName: 'Build Linux/macOS native assets'
-      condition: ne(variables.rid, 'windows-x64'), ne(variables.rid, 'windows-x86')
+      condition: ne(variables.rid, 'windows-x64', 'windows-x86')
       inputs:
         script: 'dotnet build -c $(buildConfiguration) src/WebWindow/WebWindow.csproj /t:BuildNonWindowsNative'
     - task: CmdLine@2
