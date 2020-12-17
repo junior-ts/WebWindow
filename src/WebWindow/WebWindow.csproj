@@ -4,7 +4,7 @@
     <Title>WebWindow</Title>
     <PackageDescription>Open native OS windows hosting web UI on Windows, Mac, and Linux</PackageDescription>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
     <NativeOutputDir>..\WebWindow.Native\$(Platform)\$(Configuration)\</NativeOutputDir>
     <IsMacOS>$([MSBuild]::IsOsPlatform('OSX'))</IsMacOS>
     <NativeAssetRuntimeIdentifier Condition="'$(OS)' == 'Windows_NT' AND '$(Platform)' == 'x64'">win-x64</NativeAssetRuntimeIdentifier>
@@ -12,6 +12,8 @@
     <NativeAssetRuntimeIdentifier Condition="'$(OS)' != 'Windows_NT' AND '$(IsMacOS)' != 'true'">linux-x64</NativeAssetRuntimeIdentifier>
     <NativeAssetRuntimeIdentifier Condition="'$(OS)' != 'Windows_NT' AND '$(IsMacOS)' == 'true'">osx-x64</NativeAssetRuntimeIdentifier>
     <Platforms>AnyCPU;x64;x86</Platforms>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>WebWindowCross</PackageId>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(OS)' == 'Windows_NT' AND '$(Configuration)' == 'Debug'">
@@ -35,6 +37,6 @@
       <Pack>true</Pack>
       <PackagePath>runtimes/$(NativeAssetRuntimeIdentifier)/native/%(Filename)%(Extension)</PackagePath>
     </Content>
-  </ItemGroup>
+  </ItemGroup> 
 
 </Project>

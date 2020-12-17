@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
     <Title>WebWindow.Blazor</Title>
     <PackageDescription>Host a Blazor application inside a native OS window on Windows, Mac, and Linux</PackageDescription>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Platforms>AnyCPU;x64;x86</Platforms>
+    <PackageId>WebWindowCross.Blazor</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
