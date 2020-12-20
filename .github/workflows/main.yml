@@ -14,7 +14,7 @@ jobs:
 
       - name: Restore
         run: dotnet restore WebWindow.csproj
-        working-directory: WebWindow
+        working-directory: src/WebWindow
 
       - name: Build
         run: dotnet build --no-restore -c Release
