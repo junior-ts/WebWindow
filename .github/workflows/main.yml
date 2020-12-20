@@ -25,6 +25,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        with: 
-          project: src/WebWindow/WebWindow.csproj
-          run: dotnet build
+        run: dotnet build --configuration release
