@@ -18,4 +18,5 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore -c Release
+        working-directory: src/WebWindow.csproj
         
