@@ -20,3 +20,7 @@ jobs:
         run: dotnet build --no-restore -c Release
         working-directory: src/WebWindow
         
+      - name: Publish
+        run: dotnet publish --no-build -c Release -o ./published
+        working-directory: src/WebWindow
+        
