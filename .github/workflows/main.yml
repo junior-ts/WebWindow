@@ -21,6 +21,6 @@ jobs:
         working-directory: src/WebWindow
         
       - name: Publish
-        run: dotnet publish --no-build -c Release -o ./published
+        run: dotnet publish --framework netstandard2.1 --no-build -c Release -o ./published
         working-directory: src/WebWindow
         
