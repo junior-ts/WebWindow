@@ -1,0 +1,26 @@
+name: "Build Project"
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1
+
+      - name: Restore
+        run: dotnet restore WebWindow.csproj
+        working-directory: src/WebWindow
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+        working-directory: src/WebWindow
+        
+      - name: Publish
+        run: dotnet publish --framework netstandard2.1 --no-build -c Release -o ./published
+        working-directory: src/WebWindow
+        

@@ -19,8 +19,11 @@ jobs:
         mac:
           imageName: 'macos-10.14'
           rid: 'osx-x64'
-        windows:
+        windows64:
           rid: 'windows-x64'
+          imageName: 'windows-2019'
+        windows86:
+          rid: 'windows-x86'
           imageName: 'windows-2019'
 
     pool:
@@ -34,7 +37,13 @@ jobs:
       displayName: 'Use .NET Core sdk'
       inputs:
         packageType: sdk
-        version: 3.0.100
+        version: 3.1.404
+        installationPath: $(Agent.ToolsDirectory)/dotnet
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk'
+      inputs:
+        packageType: sdk
+        version: 5.0.101
         installationPath: $(Agent.ToolsDirectory)/dotnet
     - task: CmdLine@2
       displayName: 'Install linux dependencies'
@@ -42,7 +51,7 @@ jobs:
       inputs:
         script: 'sudo apt-get update && sudo apt-get install libgtk-3-dev libwebkit2gtk-4.0-dev'
     - task: NuGetCommand@2
-      displayName: 'NuGet package restore for Windows native packages'
+      displayName: 'NuGet package restore for Windows native packages for x64'
       condition: eq(variables.rid, 'windows-x64')
       inputs:
         command: 'restore'
@@ -55,9 +64,24 @@ jobs:
         solution: 'WebWindow.Native.sln'
         platform: 'x64'
         configuration: '$(buildConfiguration)'
+
+    - task: NuGetCommand@2
+      displayName: 'NuGet package restore for Windows native packages for x86'
+      condition: eq(variables.rid, 'windows-x86')
+      inputs:
+        command: 'restore'
+        restoreSolution: 'WebWindow.Native.sln'
+        feedsToUse: 'select'
+    - task: VSBuild@1
+      displayName: 'Build Windows native assets'
+      condition: eq(variables.rid, 'windows-x86')
+      inputs:
+        solution: 'WebWindow.Native.sln'
+        platform: 'x86'
+        configuration: '$(buildConfiguration)'
     - task: CmdLine@2
       displayName: 'Build Linux/macOS native assets'
-      condition: ne(variables.rid, 'windows-x64')
+      condition: ne(variables.imageName, 'windows-2019')
       inputs:
         script: 'dotnet build -c $(buildConfiguration) src/WebWindow/WebWindow.csproj /t:BuildNonWindowsNative'
     - task: CmdLine@2
@@ -69,11 +93,29 @@ jobs:
       displayName: 'dotnet pack WebWindow'
       inputs:
         script: 'dotnet pack -c $(buildConfiguration) src/WebWindow/WebWindow.csproj /p:VersionPrefix=$(versionprefix) /p:VersionSuffix=$(Build.BuildNumber)'
+
+    - task: CmdLine@2
+      condition: eq(variables.rid, 'windows-x86')
+      displayName: 'Build .js artifact for WebWindow.Blazor.JS'
+      inputs:
+        script: 'dotnet build -c $(buildConfiguration) src/WebWindow.Blazor.JS'
+    - task: CmdLine@2
+      displayName: 'dotnet pack WebWindow'
+      inputs:
+        script: 'dotnet pack -c $(buildConfiguration) src/WebWindow/WebWindow.csproj /p:VersionPrefix=$(versionprefix) /p:VersionSuffix=$(Build.BuildNumber)'
+
     - task: CmdLine@2
       condition: eq(variables.rid, 'windows-x64')
       displayName: 'dotnet pack WebWindow.Blazor'
       inputs:
         script: 'dotnet pack -c $(buildConfiguration) src/WebWindow.Blazor/WebWindow.Blazor.csproj /p:VersionPrefix=$(versionprefix) /p:VersionSuffix=$(Build.BuildNumber)'
+
+    - task: CmdLine@2
+      condition: eq(variables.rid, 'windows-x86')
+      displayName: 'dotnet pack WebWindow.Blazor'
+      inputs:
+        script: 'dotnet pack -c $(buildConfiguration) src/WebWindow.Blazor/WebWindow.Blazor.csproj /p:VersionPrefix=$(versionprefix) /p:VersionSuffix=$(Build.BuildNumber)'
+
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: 'artifacts'
@@ -85,7 +127,11 @@ jobs:
     - task: DownloadBuildArtifacts@0
       inputs:
         downloadPath: 'artifacts'
-        artifactName: 'artifacts-windows-x64'
+        artifactName: 'artifacts-windows-x64'    
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadPath: 'artifacts'
+        artifactName: 'artifacts-windows-x86'    
     - task: DownloadBuildArtifacts@0
       inputs:
         downloadPath: 'artifacts'
@@ -100,11 +146,15 @@ jobs:
     - task: CmdLine@2
       displayName: 'Merge .nupkg files'
       inputs:
-        script: 'sudo apt install zipmerge && mkdir combined && zipmerge combined/WebWindow.$(versionprefix)-$(Build.BuildNumber).nupkg artifacts/*/WebWindow.$(versionprefix)-$(Build.BuildNumber).nupkg'
+        script: 'sudo apt install zipmerge && mkdir combined && zipmerge combined/WebWindowCross.$(versionprefix)-$(Build.BuildNumber).nupkg artifacts/*/WebWindowCross.$(versionprefix)-$(Build.BuildNumber).nupkg'
     - task: CmdLine@2
       displayName: 'Copy WebWindow.Blazor nupkg to output'
       inputs:
-        script: 'cp artifacts/artifacts-windows-x64/WebWindow.Blazor.*.nupkg combined/'
+        script: 'cp artifacts/artifacts-windows-x64/WebWindowCross.Blazor.*.nupkg combined/'    
+    - task: CmdLine@2
+      displayName: 'Copy WebWindowCross.Blazor nupkg to output'
+      inputs:
+        script: 'cp artifacts/artifacts-windows-x86/WebWindowCross.Blazor.*.nupkg combined/'
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: 'combined'
@@ -132,4 +182,4 @@ jobs:
         command: push
         packagesToPush: 'artifacts/artifacts-combined/*.nupkg'
         nuGetFeedType: external
-        publishFeedCredentials: 'WebWindowNuGet'
+        publishFeedCredentials: 'nuget'
