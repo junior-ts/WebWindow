@@ -1,0 +1,1 @@
+dotnet pack C:\Users\Junior\source\repos\WebWindow-master\src\WebWindow\WebWindow.csproj -c Release /p:NuspecFile=..\..\Directory.Build.nuspec --no-build

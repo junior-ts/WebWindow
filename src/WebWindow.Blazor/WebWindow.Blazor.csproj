@@ -6,7 +6,7 @@
     <PackageDescription>Host a Blazor application inside a native OS window on Windows, Mac, and Linux</PackageDescription>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <PackageId>WebWindowCross.Blazor</PackageId>
+    <PackageId>WebWindowEdge.Blazor</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,7 @@
     <EmbeddedResource Include="../WebWindow.Blazor.JS/dist/blazor.desktop.js" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT' AND '$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\WebWindow\WebWindow.csproj" />
   </ItemGroup>
 
